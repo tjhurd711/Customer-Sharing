@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial Video Delivery Confirmation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #d0a789;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header-logo {
+      max-width: 500px;
+      height: auto;
+      margin-bottom: 20px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    /* Video Player Section */
+    .video-section {
+      margin-bottom: 30px;
+    }
+    
+    .video-wrapper {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    video {
+      width: 100%;
+      display: block;
+    }
+    
+    .loading {
+      padding: 100px 20px;
+      text-align: center;
+      color: #999;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #2a5298;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      padding: 30px;
+      background: #ffebee;
+      border: 2px solid #f44336;
+      border-radius: 8px;
+      color: #c62828;
+    }
+    
+    /* Message Section */
+    .message-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .message-section h2 {
+      font-size: 32px;
+      color: #1e3c72;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .message-section p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+    }
+    
+    /* Info Box */
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196F3;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #1565c0;
+      line-height: 1.6;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      padding: 16px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      justify-content: center;
+      min-width: 300px;
+    }
+    
+    .btn-download {
+      background: linear-gradient(135deg, #2196F3 0%, #0b7dda 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    }
+    
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(33, 150, 243, 0.5);
+    }
+    
+    .btn-confirm {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+      font-size: 17px;
+      padding: 18px 40px;
+    }
+    
+    .btn-confirm:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+    }
+    
+    .btn-confirm:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Success State */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    .success-state.show {
+      display: block;
+    }
+    
+    .success-icon {
+      font-size: 100px;
+      margin-bottom: 20px;
+      animation: scaleIn 0.5s ease-out;
+    }
+    
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .success-state h2 {
+      color: #2e7d32;
+      margin-bottom: 15px;
+      font-size: 32px;
+    }
+    
+    .success-state p {
+      color: #555;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
+    /* Loading Overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .loading-overlay.show {
+      display: flex;
+    }
+    
+    .loading-content {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    
+    .loading-content .spinner {
+      border-color: #f3f3f3;
+      border-top-color: #2a5298;
+      width: 50px;
+      height: 50px;
+    }
+    
+    .loading-content p {
+      margin-top: 20px;
+      color: #555;
+      font-size: 16px;
+    }
+    
+    .error-message {
+      display: none;
+      background: #ffebee;
+      border: 2px solid #f44336;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-top: 15px;
+      color: #c62828;
+      text-align: left;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 { font-size: 24px; }
+      .message-section h2 { font-size: 26px; }
+      .btn { min-width: 100%; }
+      .success-icon { font-size: 80px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://www.dropbox.com/scl/fi/i5ye9vg5wzfvxwyrwczq6/Untitled-940-x-600-px-1400-x-600-px.png?rlkey=rk5t9ot5gchvjcqx71lwiln1o&st=8orea38d&dl=1" alt="Celebrife Logo" class="header-logo">
+      <h1 id="headerTitle">⛪️ Memorial Video Delivery</h1>
+      <p id="headerSubtitle">Review and confirm receipt</p>
+    </div>
+    
+    <div class="content">
+      <!-- Initial State -->
+      <div id="initialState">
+        <!-- Video Player Section -->
+        <div class="video-section">
+          <div id="videoContainer" class="loading">
+            <div class="spinner"></div>
+            <p>Loading video...</p>
+          </div>
+        </div>
+        
+        <!-- Message Section -->
+        <div class="message-section">
+          <h2>📥 Video Ready for Download</h2>
+          <p>Memorial video for <strong id="deceasedName">your loved one</strong></p>
+        </div>
+        
+        <!-- Info Box -->
+        <div class="info-box">
+          💡 <strong>Note:</strong> The video download link will be included in the email sent back to the family, so you and the family will both be able to download it again if necessary.
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <a id="downloadBtn" href="#" class="btn btn-download" download>
+            📥 Download Video
+          </a>
+          
+          <button id="confirmBtn" class="btn btn-confirm">
+            ✅ Let the Family Know It Has Been Successfully Delivered
+          </button>
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+          <strong>⚠️ Error:</strong><br>
+          <span id="errorText"></span>
+        </div>
+      </div>
+      
+      <!-- Success State -->
+      <div id="successState" class="success-state">
+        <div class="success-icon">✅</div>
+        <h2>Confirmation Sent!</h2>
+        <p>The family has been notified that you have successfully received the memorial video.</p>
+        <p style="margin-top: 20px; font-size: 15px; color: #777;">
+          You may now close this page.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Sending confirmation to the family...</p>
+    </div>
+  </div>
+  
+  <script>
+    // Configuration
+    const API_BASE = 'https://4hyy6kr2id.execute-api.us-east-2.amazonaws.com/prod';
+    
+    // Parse URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const deliveryId = urlParams.get('id');
+    const jobId = urlParams.get('job');
+    const coordinatorName = urlParams.get('name');
+    const coordinatorOrg = urlParams.get('org');
+    const deceasedNameParam = urlParams.get('deceased');
+    
+    // Validate parameters
+    if (!deliveryId || !jobId) {
+      showError('Invalid confirmation link. Please check your email for the correct link.');
+      document.getElementById('confirmBtn').disabled = true;
+    } else {
+      loadVideoData();
+    }
+    
+    // Load video data
+    async function loadVideoData() {
+      try {
+        console.log('[API] Loading video data for job:', jobId);
+        const response = await fetch(`${API_BASE}/jobs/${jobId}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('[API] Response:', data);
+        
+        displayVideo(data);
+        
+      } catch (error) {
+        console.error('[API ERROR]', error);
+        showVideoError('Failed to load video: ' + error.message);
+      }
+    }
+    
+    // Display video
+    function displayVideo(data) {
+      const container = document.getElementById('videoContainer');
+      
+      // Update deceased name
+      if (deceasedNameParam) {
+        document.getElementById('deceasedName').textContent = deceasedNameParam;
+        document.getElementById('headerTitle').textContent = `⛪️ ${deceasedNameParam}'s Memorial Video`;
+      } else if (data.settings?.fullName) {
+        document.getElementById('deceasedName').textContent = data.settings.fullName;
+        document.getElementById('headerTitle').textContent = `⛪️ ${data.settings.fullName}'s Memorial Video`;
+      }
+      
+      // Set download link
+      const downloadUrl = data.downloadUrl || data.videoUrl;
+      document.getElementById('downloadBtn').href = downloadUrl;
+      
+      // Display video player
+      container.innerHTML = `
+        <div class="video-wrapper">
+          <video controls preload="auto" crossorigin="anonymous">
+            <source src="${data.videoUrl}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      `;
+      
+      const video = container.querySelector('video');
+      video.addEventListener('error', (e) => {
+        console.error('[VIDEO ERROR]', e);
+        showVideoError('Video failed to load. Please contact support.');
+      });
+    }
+    
+    // Handle confirmation button
+    document.getElementById('confirmBtn').addEventListener('click', async () => {
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.add('show');
+      
+      try {
+        console.log('[CONFIRM] Sending confirmation:', {
+          deliveryId,
+          jobId,
+          coordinatorName,
+          coordinatorOrg
+        });
+        
+        // Send confirmation to API
+        const response = await fetch(`${API_BASE}/jobs/${jobId}/confirm-delivery`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            deliveryId: deliveryId,
+            coordinatorName: coordinatorName,
+            coordinatorOrg: coordinatorOrg
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to send confirmation. Please try again or contact support.');
+        }
+        
+        const result = await response.json();
+        console.log('[CONFIRM] Success:', result);
+        
+        // Hide loading and initial state, show success
+        document.getElementById('loadingOverlay').classList.remove('show');
+        document.getElementById('initialState').style.display = 'none';
+        document.getElementById('successState').classList.add('show');
+        
+      } catch (error) {
+        console.error('[CONFIRM ERROR]', error);
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').classList.remove('show');
+        showError(error.message);
+      }
+    });
+    
+    // Show video error
+    function showVideoError(message) {
+      const container = document.getElementById('videoContainer');
+      container.innerHTML = `<div class="error">${message}</div>`;
+    }
+    
+    // Show error message
+    function showError(message) {
+      document.getElementById('errorText').textContent = message;
+      document.getElementById('errorMessage').classList.add('show');
+    }
+  </script>
+</body>
+</html>
